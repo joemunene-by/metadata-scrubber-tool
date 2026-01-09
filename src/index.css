@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 10 10 11;
+  --foreground: 255 255 255;
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-background text-foreground antialiased;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0, transparent 50%), 
+    radial-gradient(at 100% 0%, rgba(244, 63, 94, 0.1) 0, transparent 50%);
+  min-height: 100vh;
+}
+
+.glass-card {
+  @apply bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl;
+}
+
+.premium-button {
+  @apply px-6 py-3 bg-primary text-white font-medium rounded-xl transition-all duration-300 hover:bg-primary-hover hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-primary/20;
+}
+
+.secondary-button {
+  @apply px-6 py-3 bg-secondary text-white font-medium rounded-xl transition-all duration-300 hover:bg-secondary-hover border border-white/5;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-white/10 rounded-full hover:bg-white/20;
+}

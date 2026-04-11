@@ -1,78 +1,100 @@
-# 🛡️ MetaClean Pro
+# Metadata Scrubber Tool
 
-![MetaClean Banner](./assets/ui_mockup.png)
+A command-line utility for stripping metadata from images and PDF files. Built for privacy-conscious professionals who need reliable, local-only metadata sanitization without sending files to third-party services.
 
-**MetaClean Pro** is a high-end, privacy-first metadata sanitizer designed for professionals who value data sovereignty. It allows you to strip hidden GPS coordinates, device information, and personal signatures from your files entirely within your browser or via a powerful CLI.
+All processing happens locally. Nothing leaves your machine.
 
-## ✨ Features
+## Features
 
-- **💎 Premium UI**: A sleek, dark-mode dashboard built with React, Tailwind, and Framer Motion.
-- **🔒 Privacy First**: All processing happens client-side. Your files never touch a server.
-- **🖼️ Deep Sanitize**: Uses Canvas-re-rendering to ensure absolute removal of all hidden metadata layers.
-- **⚡ Fast & Efficient**: Batch processing support with real-time metadata detection.
-- **💻 CLI Power**: A standalone Python script for automated, local batch processing.
+- Strip EXIF data from JPEG, PNG, and TIFF images (GPS coordinates, device info, timestamps, thumbnails)
+- Remove document metadata from PDFs (author, creator, producer, creation/modification dates)
+- Inspect mode to view embedded metadata without modifying files
+- Batch processing across entire directories
+- Recursive directory scanning
+- Automatic backup of originals before scrubbing
+- Dry-run mode to preview changes before committing
+- Verbose output showing exactly what was removed
+- Clean re-encoding of images to eliminate hidden metadata layers
 
----
+## Installation
 
-## 🚀 Getting Started
+```bash
+git clone https://github.com/joemunene-by/metadata-scrubber-tool.git
+cd metadata-scrubber-tool
+pip install -r requirements.txt
+```
 
-### Web Application
+Requires Python 3.8 or later.
 
-1. **Clone the repo**:
-   ```bash
-   git clone https://github.com/joemunene-by/metadata-scrubber-tool.git
-   cd metadata-scrubber-tool
-   ```
-2. **Install dependencies**:
-   ```bash
-   npm install
-   ```
-3. **Run locally**:
-   ```bash
-   npm run dev
-   ```
+## Usage
 
-### Command Line Interface (CLI)
+### Inspect metadata on a single file
 
-The CLI tool is located in the `cli/` directory.
+```bash
+python3 scrubber.py --input photo.jpg --inspect
+```
 
-1. **Install requirements**:
-   ```bash
-   pip install Pillow
-   ```
-2. **Run the script**:
-   ```bash
-   python cli/metaclean.py -f path/to/image.jpg
-   ```
-   *For batch processing a directory:*
-   ```bash
-   python cli/metaclean.py -d path/to/images/
-   ```
+### Strip metadata from a single image
 
----
+```bash
+python3 scrubber.py --input photo.jpg
+```
 
-## 🛠️ Technology Stack
+### Strip metadata from a PDF
 
-- **Frontend**: React, Vite, Tailwind CSS, Framer Motion
-- **Icons**: Lucide React
-- **Logic**: EXIF-JS, HTML5 Canvas API
-- **CLI**: Python 3, Pillow
+```bash
+python3 scrubber.py --input document.pdf
+```
 
----
+### Batch process a directory with backups
 
-## 📸 Screenshots
+```bash
+python3 scrubber.py --input ./photos/ --recursive --backup
+```
 
-<div align="center">
-  <img src="./assets/logo.png" width="300" alt="MetaClean Logo">
-  <p><i>The Official MetaClean Identity</i></p>
-</div>
+### Output cleaned files to a separate directory
 
----
+```bash
+python3 scrubber.py --input ./photos/ --output ./clean/ --recursive
+```
 
-## 🤝 Contributing
+### Preview what would be removed (dry run)
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+```bash
+python3 scrubber.py --input ./files/ --dry-run --recursive --verbose
+```
 
-## 📄 License
+## Supported Formats
 
-MIT License - Copyright (c) 2026 MetaClean Pro
+| Format | Extensions         | Metadata Removed                          |
+|--------|--------------------|-------------------------------------------|
+| JPEG   | .jpg, .jpeg        | EXIF, GPS, ICC profile, XMP, thumbnails   |
+| PNG    | .png               | Text chunks, ICC profile, EXIF            |
+| TIFF   | .tiff, .tif        | EXIF, GPS, ICC profile                    |
+| PDF    | .pdf               | Author, creator, producer, dates, subject |
+
+## Command Reference
+
+| Flag            | Description                                      |
+|-----------------|--------------------------------------------------|
+| `-i, --input`   | Path to file or directory (required)             |
+| `-o, --output`  | Output directory for cleaned files               |
+| `--inspect`     | View metadata without modifying files            |
+| `--backup`      | Create .bak copies before scrubbing              |
+| `-r, --recursive` | Scan directories recursively                   |
+| `--dry-run`     | Preview removals without writing changes         |
+| `-v, --verbose` | Show detailed processing output                  |
+
+## How It Works
+
+For images, the tool opens the file, extracts raw pixel data, and writes it to a new file without any metadata. This is more thorough than simply deleting EXIF tags -- it ensures no hidden metadata survives in ancillary chunks or application markers.
+
+For PDFs, the tool reads all pages and writes them to a new document with zeroed-out document information fields.
+
+## Disclaimer
+
+This tool is provided for legitimate privacy and security purposes. Use it responsibly and in compliance with applicable laws. The authors are not responsible for misuse.
+
+## License
+
+MIT License. See [LICENSE](LICENSE) for details.
